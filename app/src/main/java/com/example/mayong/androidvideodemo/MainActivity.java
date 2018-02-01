@@ -17,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String path = "http://112.253.22.157/17/z/z/y/u/zzyuasjwufnqerzvyxgkuigrkcatxr/hc.yinyuetai.com/D046015255134077DDB3ACA0D7E68D45.flv";
     private VideoView videoView;
+    private int lastPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,23 +32,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        if(lastPosition>0){
+            videoView.seekTo(lastPosition);
+        }
+        videoView.start();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         if(!videoView.isPlaying()){
-
-            videoView.start();
+            videoView.resume();
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+         lastPosition = videoView.getCurrentPosition();
         if(videoView.isPlaying()){
-
             videoView.pause();
         }
     }
-
 
     private void initView() {
         videoView = findViewById(R.id.surface);
@@ -56,6 +64,12 @@ public class MainActivity extends AppCompatActivity {
     private void init() throws IOException {
        videoView.setVideoURI(Uri.parse(path));
        videoView.start();
+       videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+           @Override
+           public void onPrepared(MediaPlayer mp) {
+
+           }
+       });
     }
 
     @Override

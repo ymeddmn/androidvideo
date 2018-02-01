@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.VideoView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,8 +16,7 @@ import java.io.InputStream;
 public class MainActivity extends AppCompatActivity {
 
     private String path = "http://112.253.22.157/17/z/z/y/u/zzyuasjwufnqerzvyxgkuigrkcatxr/hc.yinyuetai.com/D046015255134077DDB3ACA0D7E68D45.flv";
-    private MediaPlayer mediaPlayer;
-    private SurfaceView surfaceView;
+    private VideoView videoView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,37 +30,40 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(!videoView.isPlaying()){
+
+            videoView.start();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(videoView.isPlaying()){
+
+            videoView.pause();
+        }
+    }
+
+
     private void initView() {
-        surfaceView = findViewById(R.id.surface);
+        videoView = findViewById(R.id.surface);
     }
 
     private void init() throws IOException {
-        mediaPlayer = new MediaPlayer();
+       videoView.setVideoURI(Uri.parse(path));
+       videoView.start();
+    }
 
-        mediaPlayer.setDataSource(this, Uri.parse(path));
-        surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
-            @Override
-            public void surfaceCreated(SurfaceHolder holder) {
-                mediaPlayer.setDisplay(holder);
-            }
-
-            @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-            }
-
-            @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {
-
-            }
-        });
-        mediaPlayer.prepare();
-        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                mediaPlayer.start();
-                mediaPlayer.setLooping(true);
-            }
-        });
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(videoView.isPlaying()){
+            videoView.pause();
+        }
+        videoView.stopPlayback();
     }
 }

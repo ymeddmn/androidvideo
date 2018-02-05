@@ -2,3 +2,4 @@
 切记必须得加上网络权限，没有网络权限肯定不能播放视频
 
 master：MediaPlayer+SurfaceView的组合
+video4:用videoview播放，退出重进后可寻找到之前的进度
